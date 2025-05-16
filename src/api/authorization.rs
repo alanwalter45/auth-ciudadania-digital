@@ -5,7 +5,7 @@ use awc::{ClientBuilder, Connector};
 
 #[utoipa::path(
     post,
-    tag = "api",
+    tag = "API",
     path = "/authorization",
     responses(
         (status = 200, description = "Get token via authentication")

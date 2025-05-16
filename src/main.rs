@@ -7,20 +7,18 @@ use std::{env, sync::Mutex};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 mod api;
-use api::{authorization::*, refresh_token::*};
-use api::introspection::*;
-use api::get_info::*;
+use api::{authorization::*, introspection::*, refresh_token::*};
 mod model;
-use model::{app_state, param_authorization::*};
+use model::{app_state, param_authorization::*, param_introspection::*, param_refresh::*};
 
 #[derive(OpenApi)]
 #[openapi(
-        paths(authorization),
+        paths(authorization, introspection, refresh_token),
         components(
-            schemas(ParamAuthorization)
+            schemas(ParamAuthorization, ParamIntrospection, ParamRefresh)
         ),
         tags(
-            (name = "api", description = "Management endpoints.")
+            (name = "API", description = "Management endpoints.")
         ),
     )]
 struct ApiDoc;
@@ -42,7 +40,6 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(app_state.clone())
             .service(authorization)
-            .service(get_info)
             .service(refresh_token)
             .service(introspection)
             .service(

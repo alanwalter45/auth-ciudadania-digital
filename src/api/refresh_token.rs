@@ -6,6 +6,17 @@ use crate::model::response_token::*;
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
 
+#[utoipa::path(
+    post,
+    tag = "API",
+    path = "/refresh-token",
+    responses(
+        (status = 200, description = "Get field refresh_token via authentication")
+    ),
+    params(
+        ("refresh_token"=String, description="refresh_token get on authorization"),
+    )
+)]
 #[post("/refresh-token")]
 pub async fn refresh_token(
     json: web::Json<ParamRefresh>,

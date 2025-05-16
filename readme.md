@@ -25,24 +25,26 @@ cargo build --release
 ./target/release/auth
 ```
 
-
 #### Pasos Basicos
 
-- Ingresar a [auth.chuquisaca.gob.bo](https://auth.chuquisaca.gob.bo)
-- Utilizar los usuarios de prueba del archivo (csv) proveido por la agetic en el apartado de configuracion del servicio.
-- Verificar codigo vìa [yopmail.com](https://yopmail.com/en/wm) salvo que utilice la opcion <u>Dispositivo de confianza</u>
-- Apartados a consumir
-    - Obtener Token
-    - Obtener informacion de usuario
-    - Refrescar Token
-    - Introspeccion
-    - Cerrar Sesion
+-   Ingresar a [auth.chuquisaca.gob.bo](https://auth.chuquisaca.gob.bo)
+-   Utilizar los usuarios de prueba del archivo (csv) proveido por la agetic en el apartado de configuracion del servicio.
+-   Verificar codigo vìa [yopmail.com](https://yopmail.com/en/wm) salvo que utilice la opcion <u>Dispositivo de confianza</u>
+-   Apartados a consumir
+    -   Obtener Token
+    -   Obtener informacion de usuario
+    -   Refrescar Token
+    -   Introspeccion
+    -   Cerrar Sesion
 
 #### Swagger
 
-auth.chuquisaca.gob.bo/swagger-ui/
+https://auth.chuquisaca.gob.bo/swagger-ui/
 
+#### Front
+
+https://github.com/alanwalter45/auth-ciudadania-digital-front
 
 Autor
 
->alanwalter45@gmail.com
+> alanwalter45@gmail.com

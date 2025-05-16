@@ -6,6 +6,18 @@ use crate::model::response_introspection::*;
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
 
+
+#[utoipa::path(
+    post,
+    tag = "API",
+    path = "/introspection",
+    responses(
+        (status = 200, description = "Get token via authentication")
+    ),
+    params(
+        ("token"=String, description="token get on authorization"),
+    )
+)]
 #[post("/introspection")]
 pub async fn introspection(
     json: web::Json<ParamIntrospection>,

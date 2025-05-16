@@ -26,7 +26,7 @@ pub async fn introspection(
     let token = json.token.clone();
     let url = format!("{}{}", data.provider_url, "/token/introspection");
     let post_data = PostDataIntrospection { token };
-    let credential = get_credential();
+    let credential = get_credential(data.client_id.clone(),data.secret.clone());
     let client = ClientBuilder::new().connector(Connector::new()).finish();
     let mut response = client
         .post(url)

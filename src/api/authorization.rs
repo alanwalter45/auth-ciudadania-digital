@@ -27,7 +27,7 @@ pub async fn authorization(
         grant_type: "authorization_code".to_string(),
     };
 
-    let credential = get_credential();
+    let credential = get_credential(data.client_id.clone(), data.secret.clone());
 
     let client = ClientBuilder::new().connector(Connector::new()).finish();
     let mut response = client

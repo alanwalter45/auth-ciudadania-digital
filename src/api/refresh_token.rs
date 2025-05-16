@@ -29,7 +29,7 @@ pub async fn refresh_token(
         refresh_token,
     };
 
-    let credential = get_credential();
+    let credential = get_credential(data.client_id.clone(), data.secret.clone());
 
     let client = ClientBuilder::new().connector(Connector::new()).finish();
     let mut response = client

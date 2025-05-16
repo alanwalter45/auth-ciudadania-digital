@@ -39,7 +39,7 @@ cargo build --release
 
 #### Swagger
 
-https://auth.chuquisaca.gob.bo/swagger-ui/
+https://auth.chuquisaca.gob.bo/api-doc/
 
 #### Front
 

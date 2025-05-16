@@ -7,20 +7,20 @@ use std::{env, sync::Mutex};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 mod api;
-use api::{authorization::*, introspection::*, refresh_token::*};
+use api::{authentication::*, authorization::*, introspection::*, refresh_token::*};
 mod model;
 use model::{app_state, param_authorization::*, param_introspection::*, param_refresh::*};
 
 #[derive(OpenApi)]
 #[openapi(
-        paths(authorization, introspection, refresh_token),
+        paths(authentication,authorization, introspection, refresh_token),
         components(
             schemas(ParamAuthorization, ParamIntrospection, ParamRefresh)
         ),
         tags(
             (name = "API", description = "Management endpoints.")
         ),
-    )]
+)]
 struct ApiDoc;
 
 #[actix_web::main]
@@ -29,6 +29,10 @@ async fn main() -> std::io::Result<()> {
     let app_state = web::Data::new(app_state::AppState {
         url: env::var("APP_URL").unwrap(),
         provider_url: env::var("APP_URL_PROVIDER_AGETIC").unwrap(),
+        client_id: env::var("APP_CLIENT_ID").unwrap(),
+        secret: env::var("APP_SECRET").unwrap(),
+        nonce: env::var("APP_NONCE").unwrap(),
+        redirect_uri: env::var("APP_REDIRECT_URI").unwrap(),
         access_token: Mutex::new("".to_string()),
         id_token: Mutex::new("".to_string()),
     });
@@ -39,6 +43,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(app_state.clone())
+            .service(authentication)
             .service(authorization)
             .service(refresh_token)
             .service(introspection)

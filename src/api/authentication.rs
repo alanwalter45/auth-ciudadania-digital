@@ -7,9 +7,6 @@ use actix_web::{HttpResponse, Responder, get, web};
     path = "/authentication",
     responses(
         (status = 200, description = "Get url to redirect authentication")
-    ),
-    params(
-        ("redirect_uri"=String, description="url to go after authentication"),
     )
 )]
 #[get("/authentication")]

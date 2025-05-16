@@ -12,4 +12,4 @@ base64 = "0.22.1"
 dotenv = "0.15.0"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_urlencoded = "0.7.1"
-utoipa = "5.3.1"
+utoipa = { version = "5.3.1" }

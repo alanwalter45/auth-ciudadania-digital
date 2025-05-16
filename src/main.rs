@@ -19,7 +19,7 @@ use model::{app_state, param_authorization::*, param_introspection::*, param_ref
         ),
         tags(
             (name = "API", description = "Management endpoints.")
-        ),
+        )
 )]
 struct ApiDoc;
 

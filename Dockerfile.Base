@@ -1,0 +1,17 @@
+FROM debian:bullseye-slim
+
+ENV RUSTUP_HOME=/usr/local/rustup
+ENV CARGO_HOME=/usr/local/cargo
+ENV PATH=/usr/local/cargo/bin:$PATH
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    gcc \
+    libc6-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN export RUSTUP_HOME=/usr/local/rustup && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+RUN echo 'export PATH="$PATH:/usr/local/cargo/bin:/usr/local/rustup/bin"' >> /etc/profile.d/rustup.sh && chmod +x /etc/profile.d/rustup.sh

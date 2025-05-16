@@ -1,0 +1,6 @@
+FROM rust-bullseye
+
+WORKDIR /app
+COPY . .
+
+RUN cargo build --release

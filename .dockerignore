@@ -1,0 +1,6 @@
+target/
+.env.example
+Dockerfile.Main
+Dockerfile.Secondary
+.git
+.gitignore

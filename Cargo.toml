@@ -1,0 +1,15 @@
+[package]
+name = "auth-gadch"
+version = "0.1.0"
+edition = "2024"
+authors = ["alanwalter45@gmail.com"]
+
+[dependencies]
+utoipa-swagger-ui = { version = "9", features = ["actix-web"] }
+actix-web = { version = "4.10.2" }
+awc = { version = "3.7.0", features = ["rustls"] }
+base64 = "0.22.1"
+dotenv = "0.15.0"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_urlencoded = "0.7.1"
+utoipa = "5.3.1"

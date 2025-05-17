@@ -1,8 +1,8 @@
 pub mod app_state;
 pub mod param_authentication;
-pub mod param_verify;
 pub mod param_authorization;
 pub mod param_introspection;
+pub mod param_logout;
 pub mod param_refresh;
 pub mod post_data;
 pub mod post_data_introspection;

@@ -1,4 +1,5 @@
 #[derive(serde::Deserialize, utoipa::ToSchema)]
 pub struct ParamAuthorization {
-    pub code: String,
+    pub code: Option<String>,
+    pub state: Option<String>,
 }

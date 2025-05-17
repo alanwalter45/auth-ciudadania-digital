@@ -7,18 +7,15 @@ use std::{env, sync::Mutex};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 mod api;
-use api::{authentication::*, authorization::*, introspection::*, refresh_token::*, verify::*};
+use api::{authentication::*, authorization::*, introspection::*, logout::*, refresh_token::*};
 mod model;
-use model::{
-    app_state, param_authentication::*, param_authorization::*, param_introspection::*,
-    param_refresh::*, param_verify::*,
-};
+use model::{app_state, param_introspection::*, param_logout::*, param_refresh::*};
 
 #[derive(OpenApi)]
 #[openapi(
-        paths(authentication,verify,authorization, introspection, refresh_token),
+        paths(authentication,authorization, introspection, refresh_token,logout),
         components(
-            schemas(ParamAuthentication,ParamVerify,ParamAuthorization, ParamIntrospection, ParamRefresh)
+            schemas(ParamIntrospection, ParamRefresh,ParamLogout)
         ),
         tags(
             (name = "API", description = "Management endpoints.")
@@ -50,6 +47,7 @@ async fn main() -> std::io::Result<()> {
             .service(authorization)
             .service(refresh_token)
             .service(introspection)
+            .service(logout)
             .service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")
                     .url("/api-docs/openapi.json", ApiDoc::openapi()),

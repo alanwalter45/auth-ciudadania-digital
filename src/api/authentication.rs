@@ -12,7 +12,7 @@ use actix_web::{HttpResponse, Responder, get, web};
     params(
         ("redirect_uri"=String,Query,description="URI to redirect after login")
     ),
-    description = "Get URL for authenticate via AGETIC"
+    description = "Generate URL for authenticate via AGETIC"
 )]
 #[get("/authentication")]
 pub async fn authentication(

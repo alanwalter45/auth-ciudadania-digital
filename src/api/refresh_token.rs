@@ -14,16 +14,16 @@ use awc::{ClientBuilder, Connector};
         (status = 200, description = "Get field refresh_token via authentication")
     ),
     params(
-        ("refresh_token"=String, description="refresh_token get on authorization"),
+        ("refresh_token"=ParamRefresh, description="refresh_token get on authorization"),
     )
 )]
 #[post("/refresh-token")]
 pub async fn refresh_token(
-    json: web::Json<ParamRefresh>,
     data: web::Data<AppState>,
+    json: web::Json<ParamRefresh>,
 ) -> impl Responder {
     let refresh_token = json.refresh_token.clone();
-    let url = format!("{}{}", data.provider_url, "/token");
+    let url = format!("{}/token", data.provider_url);
     let post_data = PostDataRefresh {
         grant_type: "refresh_token".to_string(),
         refresh_token,

@@ -6,7 +6,6 @@ use crate::model::response_introspection::*;
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
 
-
 #[utoipa::path(
     post,
     tag = "API",
@@ -15,18 +14,18 @@ use awc::{ClientBuilder, Connector};
         (status = 200, description = "Get token via authentication")
     ),
     params(
-        ("token"=String, description="token get on authorization"),
+        ("token"=ParamIntrospection, description="token get on authorization"),
     )
 )]
 #[post("/introspection")]
 pub async fn introspection(
-    json: web::Json<ParamIntrospection>,
     data: web::Data<AppState>,
+    json: web::Json<ParamIntrospection>,
 ) -> impl Responder {
     let token = json.token.clone();
-    let url = format!("{}{}", data.provider_url, "/token/introspection");
+    let url = format!("{}/token/introspection", data.provider_url);
     let post_data = PostDataIntrospection { token };
-    let credential = get_credential(data.client_id.clone(),data.secret.clone());
+    let credential = get_credential(data.client_id.clone(), data.secret.clone());
     let client = ClientBuilder::new().connector(Connector::new()).finish();
     let mut response = client
         .post(url)

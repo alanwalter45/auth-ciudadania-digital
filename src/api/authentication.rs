@@ -1,4 +1,4 @@
-use crate::model::{app_state::*, param_authentication::ParamAuthentication};
+use crate::model::{app_state::*, param_authentication::*};
 use actix_web::{HttpResponse, Responder, get, web};
 
 #[utoipa::path(
@@ -11,7 +11,8 @@ use actix_web::{HttpResponse, Responder, get, web};
     ),
     params(
         ("redirect_uri"=String,Query,description="URI to redirect after login")
-    )
+    ),
+    description = "Get URL for authenticate via AGETIC"
 )]
 #[get("/authentication")]
 pub async fn authentication(

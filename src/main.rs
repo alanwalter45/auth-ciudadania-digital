@@ -9,13 +9,13 @@ use utoipa_swagger_ui::SwaggerUi;
 mod api;
 use api::{authentication::*, authorization::*, introspection::*, refresh_token::*};
 mod model;
-use model::{app_state, param_authorization::*, param_introspection::*, param_refresh::*};
+use model::{app_state, param_authentication::*, param_authorization::*, param_introspection::*, param_refresh::*};
 
 #[derive(OpenApi)]
 #[openapi(
         paths(authentication,authorization, introspection, refresh_token),
         components(
-            schemas(ParamAuthorization, ParamIntrospection, ParamRefresh)
+            schemas(ParamAuthentication,ParamAuthorization, ParamIntrospection, ParamRefresh)
         ),
         tags(
             (name = "API", description = "Management endpoints.")
@@ -31,8 +31,8 @@ async fn main() -> std::io::Result<()> {
         provider_url: env::var("APP_URL_PROVIDER_AGETIC").unwrap(),
         client_id: env::var("APP_CLIENT_ID").unwrap(),
         secret: env::var("APP_SECRET").unwrap(),
-        nonce: env::var("APP_NONCE").unwrap(),
-        redirect_uri: env::var("APP_REDIRECT_URI").unwrap(),
+        state: env::var("APP_NONCE").unwrap(),
+        nonce: env::var("APP_STATE").unwrap(),
         access_token: Mutex::new("".to_string()),
         id_token: Mutex::new("".to_string()),
     });

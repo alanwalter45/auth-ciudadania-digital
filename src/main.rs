@@ -3,7 +3,7 @@ use actix_web::{
     web::{self},
 };
 use dotenv::dotenv;
-use std::{env, sync::Mutex};
+use std::env;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 mod api;
@@ -33,8 +33,6 @@ async fn main() -> std::io::Result<()> {
         secret: env::var("APP_SECRET").unwrap(),
         state: env::var("APP_NONCE").unwrap(),
         nonce: env::var("APP_STATE").unwrap(),
-        access_token: Mutex::new("".to_string()),
-        id_token: Mutex::new("".to_string()),
     });
     let ip = env::var("APP_IP").unwrap();
     let port = env::var("APP_PORT").unwrap();

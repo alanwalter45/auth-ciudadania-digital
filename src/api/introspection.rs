@@ -1,6 +1,6 @@
 use super::resources::credential::*;
 use crate::model::app_state::*;
-use crate::model::param_introspection::ParamIntrospection;
+use crate::model::param_introspection::*;
 use crate::model::post_data_introspection::*;
 use crate::model::response_introspection::*;
 use actix_web::{HttpResponse, Responder, post, web};
@@ -37,6 +37,7 @@ pub async fn introspection(
         .unwrap();
 
     let response_introspection: ResponseIntrospection = response.json().await.unwrap();
+
     if response.status().is_success() {
         HttpResponse::Ok().json(&response_introspection)
     } else {

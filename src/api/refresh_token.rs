@@ -43,11 +43,6 @@ pub async fn refresh_token(
 
     let token: ResponseToken = response.json().await.unwrap();
 
-    let mut access_token = data.access_token.lock().unwrap();
-    *access_token = token.access_token.clone();
-    let mut id_token = data.id_token.lock().unwrap();
-    *id_token = token.id_token.clone();
-
     if response.status().is_success() {
         HttpResponse::Ok().json(&token)
     } else {

@@ -1,5 +1,6 @@
 use crate::model::{app_state::*, param_logout::*};
 use actix_web::{HttpResponse, Responder, get, web};
+use validator::Validate;
 
 #[utoipa::path(
     post,
@@ -16,15 +17,16 @@ use actix_web::{HttpResponse, Responder, get, web};
 )]
 #[get("/logout")]
 pub async fn logout(data: web::Data<AppState>, json: web::Json<ParamLogout>) -> impl Responder {
-    if let (Some(id_token_hint), Some(post_logout_redirect_uri)) =
-        (json.post_logout_redirect_uri.clone(), json.id_token_hint.clone())
-    {
-        let url = format!(
-            "{}/session/end?id_token_hint={}&post_logout_redirect_uri={}",
-            data.provider_url, id_token_hint, post_logout_redirect_uri
-        );
-        HttpResponse::Ok().body(url)
-    } else {
-        HttpResponse::BadRequest().body("Arguments required not found.")
+    match json.validate() {
+        Ok(_) => {
+            let url = format!(
+                "{}/session/end?id_token_hint={}&post_logout_redirect_uri={}",
+                data.provider_url,
+                json.id_token_hint.as_deref().unwrap(),
+                json.post_logout_redirect_uri.as_deref().unwrap()
+            );
+            HttpResponse::Ok().body(url)
+        }
+        Err(err) => HttpResponse::BadRequest().json(err),
     }
 }

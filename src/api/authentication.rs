@@ -1,5 +1,6 @@
 use crate::model::{app_state::*, param_authentication::*};
 use actix_web::{HttpResponse, Responder, get, web};
+use validator::Validate;
 
 #[utoipa::path(
     get,
@@ -19,13 +20,14 @@ pub async fn authentication(
     data: web::Data<AppState>,
     params: web::Query<ParamAuthentication>,
 ) -> impl Responder {
-    if let Some(redirect_uri) = &params.redirect_uri {
-        let url = format!(
-            "{}/auth?response_type=code&client_id={}&state={}&nonce={}&redirect_uri={}&scope=openid%20profile%20fecha_nacimiento%20email%20celular%20offline_access&prompt=consent",
-            data.provider_url, data.client_id, data.state, data.nonce, redirect_uri,
-        );
-        HttpResponse::Ok().body(url)
-    } else {
-        HttpResponse::BadRequest().body("Argument required not found.")
+    match params.validate() {
+        Ok(_) => {
+            let url = format!(
+                "{}/auth?response_type=code&client_id={}&state={}&nonce={}&redirect_uri={}&scope=openid%20profile%20fecha_nacimiento%20email%20celular%20offline_access&prompt=consent",
+                data.provider_url, data.client_id, data.state, data.nonce, params.redirect_uri.clone().unwrap(),
+            );
+            HttpResponse::Ok().body(url)
+        }
+        Err(err) => HttpResponse::BadRequest().json(err),
     }
 }

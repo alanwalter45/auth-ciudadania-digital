@@ -5,6 +5,7 @@ use crate::model::post_data_introspection::*;
 use crate::model::response_introspection::*;
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
+use validator::Validate;
 
 #[utoipa::path(
     post,
@@ -22,25 +23,30 @@ pub async fn introspection(
     data: web::Data<AppState>,
     json: web::Json<ParamIntrospection>,
 ) -> impl Responder {
-    let token = json.token.clone();
-    let url = format!("{}/token/introspection", data.provider_url);
-    let post_data = PostDataIntrospection { token };
-    let credential = get_credential(data.client_id.clone(), data.secret.clone());
-    let client = ClientBuilder::new().connector(Connector::new()).finish();
-    let mut response = client
-        .post(url)
-        .insert_header(("cache-control", "no-cache"))
-        .insert_header(("authorization", credential))
-        .insert_header(("Content-Type", "application/x-www-form-urlencoded"))
-        .send_body(serde_urlencoded::to_string(&post_data).unwrap())
-        .await
-        .unwrap();
+    match json.validate() {
+        Ok(_) => {
+            let token = json.token.clone().unwrap();
+            let url = format!("{}/token/introspection", data.provider_url);
+            let post_data = PostDataIntrospection { token };
+            let credential = get_credential(data.client_id.clone(), data.secret.clone());
+            let client = ClientBuilder::new().connector(Connector::new()).finish();
+            let mut response = client
+                .post(url)
+                .insert_header(("cache-control", "no-cache"))
+                .insert_header(("authorization", credential))
+                .insert_header(("Content-Type", "application/x-www-form-urlencoded"))
+                .send_body(serde_urlencoded::to_string(&post_data).unwrap())
+                .await
+                .unwrap();
 
-    let response_introspection: ResponseIntrospection = response.json().await.unwrap();
+            let response_introspection: ResponseIntrospection = response.json().await.unwrap();
 
-    if response.status().is_success() {
-        HttpResponse::Ok().json(&response_introspection)
-    } else {
-        HttpResponse::InternalServerError().body("POST request failed.")
+            if response.status().is_success() {
+                HttpResponse::Ok().json(&response_introspection)
+            } else {
+                HttpResponse::InternalServerError().body("POST request failed.")
+            }
+        }
+        Err(err) => HttpResponse::BadRequest().json(err),
     }
 }

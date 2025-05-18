@@ -5,6 +5,7 @@ edition = "2024"
 authors = ["alanwalter45@gmail.com"]
 
 [dependencies]
+validator = { version = "0.20.0", features = ["derive"] }
 utoipa-swagger-ui = { version = "9", features = ["actix-web"] }
 actix-web = { version = "4.10.2" }
 awc = { version = "3.7.0", features = ["rustls"] }

@@ -3,6 +3,7 @@ use crate::model::param_introspection::*;
 use crate::model::response_information::*;
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
+use validator::Validate;
 
 #[utoipa::path(
     post,
@@ -20,21 +21,26 @@ pub async fn information(
     data: web::Data<AppState>,
     json: web::Json<ParamIntrospection>,
 ) -> impl Responder {
-    let token = json.token.clone();
-    let url = format!("{}/me", data.provider_url);
-    let client = ClientBuilder::new().connector(Connector::new()).finish();
-    let mut response = client
-        .get(url)
-        .insert_header(("authorization", format!("Bearer {}", token)))
-        .send()
-        .await
-        .unwrap();
+    match json.validate() {
+        Ok(_) => {
+            let token = json.token.as_deref().unwrap();
+            let url = format!("{}/me", data.provider_url);
+            let client = ClientBuilder::new().connector(Connector::new()).finish();
+            let mut response = client
+                .get(url)
+                .insert_header(("authorization", format!("Bearer {}", token)))
+                .send()
+                .await
+                .unwrap();
 
-    let response_introspection: ResponseInformation = response.json().await.unwrap();
+            let response_introspection: ResponseInformation = response.json().await.unwrap();
 
-    if response.status().is_success() {
-        HttpResponse::Ok().json(&response_introspection)
-    } else {
-        HttpResponse::InternalServerError().body("GET request failed.")
+            if response.status().is_success() {
+                HttpResponse::Ok().json(&response_introspection)
+            } else {
+                HttpResponse::InternalServerError().body("GET request failed.")
+            }
+        }
+        Err(err) => HttpResponse::BadRequest().json(err),
     }
 }

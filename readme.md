@@ -4,7 +4,7 @@ Implementación del servicio de autenticación con ciudadanía digital.
 
 #### Documentación
 
-https://developer.ciudadaniadigital.bo
+https://developer.ciudadaniadigital.bo/docs/servicios/autenticacion
 
 - Leer los apartados del servicio (Terminología, Autenticación, Autorización, Endpoints Utiles).
 - Registrar un proyecto de prueba para utilizar el API del servicio de autenticación.

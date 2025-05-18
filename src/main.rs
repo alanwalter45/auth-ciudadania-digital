@@ -7,13 +7,16 @@ use std::env;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 mod api;
-use api::{authentication::*, authorization::*, introspection::*, logout::*, refresh_token::*};
+use api::{
+    authentication::*, authorization::*, information::*, introspection::*, logout::*,
+    refresh_token::*,
+};
 mod model;
 use model::{app_state, param_introspection::*, param_logout::*, param_refresh::*};
 
 #[derive(OpenApi)]
 #[openapi(
-        paths(authentication,authorization, introspection, refresh_token,logout),
+        paths(authentication,authorization,information, introspection, refresh_token,logout),
         components(
             schemas(ParamIntrospection, ParamRefresh,ParamLogout)
         ),
@@ -43,6 +46,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(app_state.clone())
             .service(authentication)
             .service(authorization)
+            .service(information)
             .service(refresh_token)
             .service(introspection)
             .service(logout)

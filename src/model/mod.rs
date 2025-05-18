@@ -7,5 +7,6 @@ pub mod param_refresh;
 pub mod post_data;
 pub mod post_data_introspection;
 pub mod post_data_refresh;
+pub mod response_information;
 pub mod response_introspection;
 pub mod response_token;

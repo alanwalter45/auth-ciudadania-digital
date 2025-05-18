@@ -1,4 +1,4 @@
-use crate::model::{app_state::*, param_logout::*};
+use crate::AppState;
 use actix_web::{HttpResponse, Responder, get, web};
 use validator::Validate;
 
@@ -29,4 +29,18 @@ pub async fn logout(data: web::Data<AppState>, json: web::Json<ParamLogout>) -> 
         }
         Err(err) => HttpResponse::BadRequest().json(err),
     }
+}
+
+#[derive(serde::Deserialize, utoipa::ToSchema, Validate)]
+pub struct ParamLogout {
+    #[validate(
+        required,
+        length(min = 10, message = "id_token_hint must be greater than 10 chars")
+    )]
+    id_token_hint: Option<String>,
+    #[validate(
+        required,
+        length(min = 15, message = "post_logout_redirect_uri must be greater than 15 chars")
+    )]
+    post_logout_redirect_uri: Option<String>,
 }

@@ -11,12 +11,11 @@ use api::{
     authentication::*, authorization::*, information::*, introspection::*, logout::*,
     refresh_token::*,
 };
-mod model;
-use model::{app_state, param_introspection::*, param_logout::*, param_refresh::*};
+mod resources;
 
 #[derive(OpenApi)]
 #[openapi(
-        paths(authentication,authorization,information, introspection, refresh_token,logout),
+        paths(authentication,authorization,information, introspection, refreshtoken,logout),
         components(
             schemas(ParamIntrospection, ParamRefresh,ParamLogout)
         ),
@@ -29,7 +28,7 @@ struct ApiDoc;
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-    let app_state = web::Data::new(app_state::AppState {
+    let app_state = web::Data::new(AppState {
         url: env::var("APP_URL").unwrap(),
         provider_url: env::var("APP_URL_PROVIDER_AGETIC").unwrap(),
         client_id: env::var("APP_CLIENT_ID").unwrap(),
@@ -47,7 +46,7 @@ async fn main() -> std::io::Result<()> {
             .service(authentication)
             .service(authorization)
             .service(information)
-            .service(refresh_token)
+            .service(refreshtoken)
             .service(introspection)
             .service(logout)
             .service(
@@ -59,4 +58,13 @@ async fn main() -> std::io::Result<()> {
     .bind((ip, port))?
     .run()
     .await
+}
+
+pub struct AppState {
+    pub url: String,
+    pub provider_url: String,
+    pub client_id: String,
+    pub nonce: String,
+    pub state: String,
+    pub secret: String,
 }

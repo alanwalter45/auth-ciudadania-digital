@@ -1,5 +1,5 @@
-use super::resources::credential::get_credential;
-use crate::model::{app_state::*, param_authorization::*, post_data::*, response_token::*};
+use crate::resources::credential::get_credential;
+use crate::AppState;
 use actix_web::{HttpResponse, Responder, get, web};
 use awc::{ClientBuilder, Connector};
 use validator::Validate;
@@ -24,7 +24,7 @@ pub async fn authorization(
     params: web::Query<ParamAuthorization>,
 ) -> impl Responder {
     match params.validate() {
-        Ok(_) =>{
+        Ok(_) => {
             if params.state.clone().unwrap() == data.state {
                 let post_data = PostData {
                     code: params.code.clone().unwrap(),
@@ -58,4 +58,38 @@ pub async fn authorization(
         }
         Err(_) => HttpResponse::BadRequest().json("Arguments required not found."),
     }
+}
+
+#[derive(serde::Deserialize, utoipa::ToSchema, Validate)]
+struct ParamAuthorization {
+    #[validate(
+        required,
+        length(min = 15, message = "code must be greater than 15 chars")
+    )]
+    code: Option<String>,
+    #[validate(
+        required,
+        length(min = 30, message = "state must be greater than 30 chars")
+    )]
+    state: Option<String>,
+}
+
+#[derive(serde::Serialize)]
+struct PostData {
+    code: String,
+    redirect_uri: String,
+    grant_type: String,
+    //code_verifier: String,
+    //client_id: String,
+    //client_secret: String,
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct ResponseToken {
+    pub access_token: String,
+    pub expires_in: i32,
+    pub id_token: String,
+    pub scope: String,
+    pub token_type: String,
+    pub refresh_token: String,
 }

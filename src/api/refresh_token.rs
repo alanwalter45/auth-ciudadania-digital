@@ -1,8 +1,6 @@
-use crate::api::resources::credential::get_credential;
-use crate::model::app_state::*;
-use crate::model::param_refresh::*;
-use crate::model::post_data_refresh::*;
-use crate::model::response_token::*;
+use crate::AppState;
+use crate::api::authorization::ResponseToken;
+use crate::resources::credential::*;
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
 use validator::Validate;
@@ -15,11 +13,11 @@ use validator::Validate;
         (status = 200, description = "Get field refresh_token via authentication")
     ),
     params(
-        ("refresh_token"=ParamRefresh, description="refresh_token get on authorization"),
+        ("json"=ParamRefresh, description="refresh_token get on authorization"),
     )
 )]
 #[post("/refresh-token")]
-pub async fn refresh_token(
+pub async fn refreshtoken(
     data: web::Data<AppState>,
     json: web::Json<ParamRefresh>,
 ) -> impl Responder {
@@ -53,4 +51,21 @@ pub async fn refresh_token(
         }
         Err(err) => HttpResponse::BadRequest().json(err),
     }
+}
+
+#[derive(serde::Deserialize, utoipa::ToSchema, Validate)]
+pub struct ParamRefresh {
+    #[validate(
+        required,
+        length(min = 10, message = "refeshtoken must be greater than 10 chars")
+    )]
+    refresh_token: Option<String>,
+}
+
+#[derive(serde::Serialize)]
+struct PostDataRefresh {
+    grant_type: String,
+    refresh_token: String,
+    //client_id: String,
+    //client_secret: String,
 }

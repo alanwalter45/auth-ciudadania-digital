@@ -1,8 +1,5 @@
-use super::resources::credential::*;
-use crate::model::app_state::*;
-use crate::model::param_introspection::*;
-use crate::model::post_data_introspection::*;
-use crate::model::response_introspection::*;
+use crate::AppState;
+use crate::resources::credential::*;
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
 use validator::Validate;
@@ -49,4 +46,32 @@ pub async fn introspection(
         }
         Err(err) => HttpResponse::BadRequest().json(err),
     }
+}
+
+#[derive(serde::Deserialize, utoipa::ToSchema, Validate)]
+pub struct ParamIntrospection {
+    #[validate(
+        required,
+        length(min = 10, message = "token must be greater than 10 chars")
+    )]
+    pub token: Option<String>,
+}
+
+#[derive(serde::Serialize)]
+struct PostDataIntrospection {
+    token: String,
+    //client_id: String,
+    //client_secret: String,
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+struct ResponseIntrospection {
+    active: bool,
+    sub: String,
+    client_id: String,
+    exp: i64,
+    iat: i64,
+    iss: String,
+    scope: String,
+    token_type: String,
 }

@@ -1,6 +1,4 @@
-use crate::model::app_state::*;
-use crate::model::param_introspection::*;
-use crate::model::response_information::*;
+use crate::{AppState, api::introspection::*};
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
 use validator::Validate;
@@ -43,4 +41,34 @@ pub async fn information(
         }
         Err(err) => HttpResponse::BadRequest().json(err),
     }
+}
+
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
+struct ResponseInformation {
+    sub: String,
+    profile: Profile,
+    email: String,
+    celular: String,
+    fecha_nacimiento: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Profile {
+    documento_identidad: Document,
+    nombre: Name,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Document {
+    numero_documento: String,
+    tipo_documento: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Name {
+    nombres: String,
+    primer_apellido: String,
+    segundo_apellido: String,
 }

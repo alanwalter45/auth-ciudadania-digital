@@ -1,4 +1,4 @@
-use crate::model::{app_state::*, param_authentication::*};
+use crate::AppState;
 use actix_web::{HttpResponse, Responder, get, web};
 use validator::Validate;
 
@@ -24,10 +24,23 @@ pub async fn authentication(
         Ok(_) => {
             let url = format!(
                 "{}/auth?response_type=code&client_id={}&state={}&nonce={}&redirect_uri={}&scope=openid%20profile%20fecha_nacimiento%20email%20celular%20offline_access&prompt=consent",
-                data.provider_url, data.client_id, data.state, data.nonce, params.redirect_uri.clone().unwrap(),
+                data.provider_url,
+                data.client_id,
+                data.state,
+                data.nonce,
+                params.redirect_uri.clone().unwrap(),
             );
             HttpResponse::Ok().body(url)
         }
         Err(err) => HttpResponse::BadRequest().json(err),
     }
+}
+
+#[derive(serde::Deserialize, utoipa::ToSchema, Validate)]
+struct ParamAuthentication {
+    #[validate(
+        required,
+        length(min = 15, message = "redirect must be greater than 15 chars")
+    )]
+    redirect_uri: Option<String>,
 }

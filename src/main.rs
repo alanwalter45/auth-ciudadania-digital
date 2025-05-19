@@ -1,6 +1,6 @@
+use actix_cors::Cors;
 use actix_web::{
-    App, HttpServer,
-    web::{self},
+    http, web::{self}, App, HttpServer
 };
 use dotenv::dotenv;
 use std::env;
@@ -41,7 +41,14 @@ async fn main() -> std::io::Result<()> {
     let port = port.parse().expect("Port is Not a Number");
 
     HttpServer::new(move || {
+        let cors = Cors::default()
+            .allowed_origin("http://192.168.200.223:5173")
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600);
         App::new()
+            .wrap(cors)
             .app_data(app_state.clone())
             .service(authentication)
             .service(authorization)

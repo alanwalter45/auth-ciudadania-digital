@@ -28,7 +28,7 @@ pub async fn authorization(
             if params.state.clone().unwrap() == data.state {
                 let post_data = PostData {
                     code: params.code.clone().unwrap(),
-                    redirect_uri: format!("{}/inicio", data.url_server),
+                    redirect_uri: format!("{}/welcome", data.url_server),
                     grant_type: "authorization_code".to_string(),
                 };
 
@@ -65,17 +65,17 @@ pub async fn authorization(
 }
 
 #[derive(serde::Deserialize, utoipa::ToSchema, Validate)]
-pub struct ParamAuthorization {
+struct ParamAuthorization {
     #[validate(
         required,
         length(min = 15, message = "code must be greater than 15 chars")
     )]
-    pub code: Option<String>,
+    code: Option<String>,
     #[validate(
         required,
         length(min = 15, message = "state must be greater than 30 chars")
     )]
-    pub state: Option<String>,
+    state: Option<String>,
 }
 
 #[derive(serde::Serialize)]

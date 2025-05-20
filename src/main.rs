@@ -9,7 +9,8 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 mod api;
 use api::{
-    authentication::*, authorization::*, incio::*, information::*, introspection::*, login::*, logout::*, refresh_token::*
+    authentication::*, authorization::*, information::*, introspection::*, logout::*, redirect::*,
+    refresh_token::*,
 };
 mod resources;
 
@@ -30,7 +31,6 @@ async fn main() -> std::io::Result<()> {
     dotenv().ok();
     let app_state = web::Data::new(AppState {
         url_server: env::var("APP_URL_SERVER").unwrap(),
-        url_client: env::var("APP_URL_CLIENT").unwrap(),
         provider_url: env::var("APP_URL_PROVIDER_AGETIC").unwrap(),
         client_id: env::var("APP_CLIENT_ID").unwrap(),
         secret: env::var("APP_SECRET").unwrap(),
@@ -58,8 +58,8 @@ async fn main() -> std::io::Result<()> {
             .service(information)
             .service(refreshtoken)
             .service(introspection)
-            .service(inicio)
-            .service(login)
+            .service(welcome)
+            .service(origin)
             .service(logout)
             .service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")
@@ -73,7 +73,6 @@ async fn main() -> std::io::Result<()> {
 }
 
 pub struct AppState {
-    pub url_client: String,
     pub url_server: String,
     pub provider_url: String,
     pub client_id: String,

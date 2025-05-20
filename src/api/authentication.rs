@@ -8,7 +8,7 @@ use validator::Validate;
     path = "/authentication",
     responses(
         (status = 200, description = "Get url to redirect authentication"),
-        (status = 400, description = "redirect_uri is requires")
+        (status = 400, description = "redirect_uri is required")
     ),
     params(
         ("redirect_uri"=String,Query,description="URI to redirect after login")

@@ -54,7 +54,7 @@ pub async fn authorization(
                 if response.status().is_success() {
                     output
                 } else {
-                    HttpResponse::InternalServerError().body("POST request failed.")
+                    HttpResponse::BadRequest().body("POST request failed.")
                 }
             } else {
                 HttpResponse::BadRequest().body("State not matching.")

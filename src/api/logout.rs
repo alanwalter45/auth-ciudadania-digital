@@ -1,5 +1,5 @@
 use crate::AppState;
-use actix_web::{HttpResponse, Responder, get, web};
+use actix_web::{HttpResponse, Responder, post, web};
 use validator::Validate;
 
 #[utoipa::path(
@@ -15,7 +15,7 @@ use validator::Validate;
     ),
     description = "Generate URL for logout"
 )]
-#[get("/logout")]
+#[post("/logout")]
 pub async fn logout(data: web::Data<AppState>, json: web::Json<ParamLogout>) -> impl Responder {
     match json.validate() {
         Ok(_) => {

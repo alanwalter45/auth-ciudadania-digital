@@ -1,6 +1,7 @@
 use actix_cors::Cors;
 use actix_web::{
-    http, web::{self}, App, HttpServer
+    App, HttpServer, http,
+    web::{self},
 };
 use dotenv::dotenv;
 use std::env;
@@ -8,8 +9,7 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 mod api;
 use api::{
-    authentication::*, authorization::*, information::*, introspection::*, logout::*,
-    refresh_token::*,
+    authentication::*, authorization::*, incio::*, information::*, introspection::*, login::*, logout::*, refresh_token::*
 };
 mod resources;
 
@@ -29,7 +29,8 @@ struct ApiDoc;
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
     let app_state = web::Data::new(AppState {
-        url: env::var("APP_URL").unwrap(),
+        url_server: env::var("APP_URL_SERVER").unwrap(),
+        url_client: env::var("APP_URL_CLIENT").unwrap(),
         provider_url: env::var("APP_URL_PROVIDER_AGETIC").unwrap(),
         client_id: env::var("APP_CLIENT_ID").unwrap(),
         secret: env::var("APP_SECRET").unwrap(),
@@ -39,13 +40,15 @@ async fn main() -> std::io::Result<()> {
     let ip = env::var("APP_IP").unwrap();
     let port = env::var("APP_PORT").unwrap();
     let port = port.parse().expect("Port is Not a Number");
+    //let allow_url = env::var("APP_ALLOW_URL").unwrap();
 
     HttpServer::new(move || {
         let cors = Cors::default()
-            .allowed_origin("http://192.168.200.223:5173")
-            .allowed_methods(vec!["GET", "POST"])
+            .allow_any_origin()
+            .allowed_methods(vec!["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"])
             .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
             .allowed_header(http::header::CONTENT_TYPE)
+            .supports_credentials()
             .max_age(3600);
         App::new()
             .wrap(cors)
@@ -55,6 +58,8 @@ async fn main() -> std::io::Result<()> {
             .service(information)
             .service(refreshtoken)
             .service(introspection)
+            .service(inicio)
+            .service(login)
             .service(logout)
             .service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")
@@ -68,7 +73,8 @@ async fn main() -> std::io::Result<()> {
 }
 
 pub struct AppState {
-    pub url: String,
+    pub url_client: String,
+    pub url_server: String,
     pub provider_url: String,
     pub client_id: String,
     pub nonce: String,

@@ -1,5 +1,5 @@
-use crate::resources::credential::get_credential;
 use crate::AppState;
+use crate::resources::credential::get_credential;
 use actix_web::{HttpResponse, Responder, get, web};
 use awc::{ClientBuilder, Connector};
 use validator::Validate;
@@ -28,7 +28,7 @@ pub async fn authorization(
             if params.state.clone().unwrap() == data.state {
                 let post_data = PostData {
                     code: params.code.clone().unwrap(),
-                    redirect_uri: format!("{}/autenticacion", data.url),
+                    redirect_uri: format!("{}/inicio", data.url_server),
                     grant_type: "authorization_code".to_string(),
                 };
 
@@ -45,10 +45,14 @@ pub async fn authorization(
                     .await
                     .unwrap();
 
-                let token: ResponseToken = response.json().await.unwrap();
+                let token: ExternalAPiResponse = response.json().await.unwrap();
 
+                let output = match token {
+                    ExternalAPiResponse::Success(data) => HttpResponse::Ok().json(&data),
+                    ExternalAPiResponse::Error(err) => HttpResponse::BadRequest().json(&err),
+                };
                 if response.status().is_success() {
-                    HttpResponse::Ok().json(&token)
+                    output
                 } else {
                     HttpResponse::InternalServerError().body("POST request failed.")
                 }
@@ -61,17 +65,17 @@ pub async fn authorization(
 }
 
 #[derive(serde::Deserialize, utoipa::ToSchema, Validate)]
-struct ParamAuthorization {
+pub struct ParamAuthorization {
     #[validate(
         required,
         length(min = 15, message = "code must be greater than 15 chars")
     )]
-    code: Option<String>,
+    pub code: Option<String>,
     #[validate(
         required,
-        length(min = 30, message = "state must be greater than 30 chars")
+        length(min = 15, message = "state must be greater than 30 chars")
     )]
-    state: Option<String>,
+    pub state: Option<String>,
 }
 
 #[derive(serde::Serialize)]
@@ -92,4 +96,17 @@ pub struct ResponseToken {
     pub scope: String,
     pub token_type: String,
     pub refresh_token: String,
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct ResponseTokenError {
+    pub error: String,
+    pub message: String,
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+enum ExternalAPiResponse {
+    Success(ResponseToken),
+    Error(ResponseTokenError),
 }

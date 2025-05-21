@@ -16,7 +16,9 @@ use validator::Validate;
 pub async fn origin(params: web::Query<ParamOrigin>) -> impl Responder {
     match params.validate() {
         Ok(_) => {
-            let url_client = params.url_client.clone().unwrap();
+            // url_client no es retornado desde la API
+            let url_client = "https://demo.chuquisaca.gob.bo";
+            //let url_client = params.url_client.clone().unwrap();
             HttpResponse::Found()
                 .insert_header(("Location", url_client))
                 .finish()
@@ -44,7 +46,9 @@ pub async fn welcome(params: web::Query<ParamWelcome>) -> impl Responder {
         Ok(_) => {
             let code = params.code.clone().unwrap();
             let state = params.state.clone().unwrap();
-            let url_client = params.state.clone().unwrap();
+            // url_client no enviado en la peticion de retorno
+            let url_client = "https://demo.chuquisaca.gob.bo/inicio";
+            //let url_client = params.state.clone().unwrap();
             HttpResponse::Found()
                 .insert_header((
                     "Location",
@@ -68,18 +72,18 @@ struct ParamWelcome {
         length(min = 15, message = "state must be greater than 15 chars")
     )]
     state: Option<String>,
-    #[validate(
-        required,
-        length(min = 8, message = "state must be greater than 8 chars")
-    )]
-    pub url_client: Option<String>,
+    // #[validate(
+    //     required,
+    //     length(min = 8, message = "state must be greater than 8 chars")
+    // )]
+    // pub url_client: Option<String>,
 }
 
 #[derive(serde::Deserialize, utoipa::ToSchema, Validate)]
 struct ParamOrigin {
-    #[validate(
+    /* #[validate(
         required,
         length(min = 8, message = "state must be greater than 8 chars")
     )]
-    pub url_client: Option<String>,
+    pub url_client: Option<String>, */
 }

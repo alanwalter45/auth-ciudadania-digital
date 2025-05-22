@@ -37,7 +37,6 @@ pub async fn origin(params: web::Query<ParamOrigin>) -> impl Responder {
     params(
         ("code"=String, description="code get on authorization"),
         ("state"=String, description="state get on authorization"),
-        ("url_client"=String, description="url's client to redirect"),
     )
 )]
 #[get("/welcome")]
@@ -56,7 +55,9 @@ pub async fn welcome(params: web::Query<ParamWelcome>) -> impl Responder {
                 ))
                 .finish()
         }
-        Err(_) => HttpResponse::BadRequest().json("Arguments required not found."),
+        Err(_) => HttpResponse::Found()
+            .insert_header(("Location", "/"))
+            .finish(),
     }
 }
 

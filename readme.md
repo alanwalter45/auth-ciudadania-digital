@@ -44,7 +44,7 @@ $ ./target/release/auth-gadch
 
 Documentación del API del aplicativo
 
-https://auth.chuquisaca.gob.bo/swagger-ui/
+https://autenticacion-beta.chuquisaca.gob.bo/swagger-ui/
 
 #### Front
 

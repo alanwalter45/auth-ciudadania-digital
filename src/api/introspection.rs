@@ -1,3 +1,4 @@
+use crate::api::authorization::ResponseError;
 use crate::AppState;
 use crate::resources::credential::*;
 use actix_web::{HttpResponse, Responder, post, web};
@@ -36,10 +37,14 @@ pub async fn introspection(
                 .await
                 .unwrap();
 
-            let response_introspection: ResponseIntrospection = response.json().await.unwrap();
+            let response_introspection: ExternalAPiResponse = response.json().await.unwrap();
+            let output = match response_introspection {
+                ExternalAPiResponse::Success(data) => HttpResponse::Ok().json(&data),
+                ExternalAPiResponse::Error(err) => HttpResponse::BadRequest().json(&err),
+            };
 
             if response.status().is_success() {
-                HttpResponse::Ok().json(&response_introspection)
+                output
             } else {
                 HttpResponse::InternalServerError().body("POST request failed.")
             }
@@ -74,4 +79,11 @@ struct ResponseIntrospection {
     iss: String,
     scope: String,
     token_type: String,
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+enum ExternalAPiResponse {
+    Success(ResponseIntrospection),
+    Error(ResponseError),
 }

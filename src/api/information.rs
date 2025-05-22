@@ -1,4 +1,4 @@
-use crate::{AppState, api::introspection::*};
+use crate::{AppState, api::authorization::ResponseError, api::introspection::*};
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
 use validator::Validate;
@@ -31,10 +31,14 @@ pub async fn information(
                 .await
                 .unwrap();
 
-            let response_introspection: ResponseInformation = response.json().await.unwrap();
+            let response_information: ExternalAPiResponse = response.json().await.unwrap();
+            let output = match response_information {
+                ExternalAPiResponse::Success(data) => HttpResponse::Ok().json(&data),
+                ExternalAPiResponse::Error(err) => HttpResponse::BadRequest().json(&err),
+            };
 
             if response.status().is_success() {
-                HttpResponse::Ok().json(&response_introspection)
+                output
             } else {
                 HttpResponse::InternalServerError().body("GET request failed.")
             }
@@ -71,4 +75,11 @@ struct Name {
     nombres: String,
     primer_apellido: String,
     segundo_apellido: String,
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(untagged)]
+enum ExternalAPiResponse {
+    Success(ResponseInformation),
+    Error(ResponseError),
 }

@@ -99,14 +99,14 @@ pub struct ResponseToken {
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
-pub struct ResponseTokenError {
+pub struct ResponseError {
     pub error: String,
     pub message: String,
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(untagged)]
-enum ExternalAPiResponse {
+pub enum ExternalAPiResponse {
     Success(ResponseToken),
-    Error(ResponseTokenError),
+    Error(ResponseError),
 }

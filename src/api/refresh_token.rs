@@ -1,5 +1,5 @@
 use crate::AppState;
-use crate::api::authorization::ResponseToken;
+use crate::api::authorization::ExternalAPiResponse;
 use crate::resources::credential::*;
 use actix_web::{HttpResponse, Responder, post, web};
 use awc::{ClientBuilder, Connector};
@@ -41,10 +41,15 @@ pub async fn refreshtoken(
                 .await
                 .unwrap();
 
-            let token: ResponseToken = response.json().await.unwrap();
+            let token: ExternalAPiResponse = response.json().await.unwrap();
+
+            let output = match token {
+                ExternalAPiResponse::Success(data) => HttpResponse::Ok().json(&data),
+                ExternalAPiResponse::Error(err) => HttpResponse::BadRequest().json(&err),
+            };
 
             if response.status().is_success() {
-                HttpResponse::Ok().json(&token)
+                output
             } else {
                 HttpResponse::InternalServerError().body("POST request failed.")
             }

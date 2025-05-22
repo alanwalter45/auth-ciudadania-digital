@@ -31,7 +31,6 @@ pub async fn information(
                 .await
                 .unwrap();
 
-            println!("{:?}", response);
             let response_introspection: ResponseInformation = response.json().await.unwrap();
 
             if response.status().is_success() {

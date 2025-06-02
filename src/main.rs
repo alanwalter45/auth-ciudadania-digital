@@ -40,11 +40,12 @@ async fn main() -> std::io::Result<()> {
     let ip = env::var("APP_IP").unwrap();
     let port = env::var("APP_PORT").unwrap();
     let port = port.parse().expect("Port is Not a Number");
-    let allow_urls = env::var("APP_ALLOW_URL").unwrap();
+    let allow_urls = env::var("APP_ALLOW_URLS").unwrap();
     let allow_urls: Vec<String> = allow_urls.split(' ').map(|s| s.to_string()).collect();
 
     HttpServer::new(move || {
         let mut cors = Cors::default()
+            .allow_any_origin()
             .allowed_methods(vec!["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"])
             .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
             .allowed_header(http::header::CONTENT_TYPE)

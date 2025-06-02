@@ -52,6 +52,15 @@ https://github.com/alanwalter45/auth-ciudadania-digital-front
 
 #### Docker
 
-Los archivos docker son para lanzar en un ambiente especifico debido a la diferencia del entorno de desarrollo con el de producción (pueden ser ajustados según se requiera).
+Los archivos Dockerfile.Base y Dockerfile.Launch son para crear un ambiente específico para un entorno de  producción (Ejemplo a ser acondicionado acorde al requerimiento).
+
+```sh
+# Crear imagen base con rust
+docker build -f Dockerfile.Base --no-cache=true -t rust-bullseye .
+# Generar ejecutable para entorno de producción
+docker build -f Dockerfile.Launch --no-cache=true -t rust-cargo-bullseye .
+# Volumen para acceder al ejecutable
+docker run -it --rm -v rust_volume:/app rust-cargo-bullseye
+```
 
 > Autor : alanwalter45@gmail.com

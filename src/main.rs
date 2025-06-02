@@ -40,16 +40,19 @@ async fn main() -> std::io::Result<()> {
     let ip = env::var("APP_IP").unwrap();
     let port = env::var("APP_PORT").unwrap();
     let port = port.parse().expect("Port is Not a Number");
-    //let allow_url = env::var("APP_ALLOW_URL").unwrap();
+    let allow_urls = env::var("APP_ALLOW_URL").unwrap();
+    let allow_urls: Vec<String> = allow_urls.split(' ').map(|s| s.to_string()).collect();
 
     HttpServer::new(move || {
-        let cors = Cors::default()
-            .allow_any_origin()
+        let mut cors = Cors::default()
             .allowed_methods(vec!["GET", "POST", "OPTIONS", "PUT", "PATCH", "DELETE"])
             .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
             .allowed_header(http::header::CONTENT_TYPE)
             .supports_credentials()
             .max_age(3600);
+        for origin in &allow_urls {
+            cors = cors.allowed_origin(origin);
+        }
         App::new()
             .wrap(cors)
             .app_data(app_state.clone())

@@ -17,7 +17,7 @@ use validator::Validate;
         ("state"=String,Query, description="field state official"),
         ("redirect_uri"=String,Query, description="field redirect_uri to use after login"),
     ),
-    description="Generate Token"
+    description="Get Token AGETIC"
 )]
 #[get("/authorization")]
 pub async fn authorization(

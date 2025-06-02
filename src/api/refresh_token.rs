@@ -10,11 +10,12 @@ use validator::Validate;
     tag = "API",
     path = "/refresh-token",
     responses(
-        (status = 200, description = "Get field refresh_token via authentication")
+        (status = 200, description = "Get refresh_token via refresh_token")
     ),
     params(
         ("json"=ParamRefresh, description="refresh_token get on authorization"),
-    )
+    ),
+    description = "Refresh Token"
 )]
 #[post("/refresh-token")]
 pub async fn refreshtoken(

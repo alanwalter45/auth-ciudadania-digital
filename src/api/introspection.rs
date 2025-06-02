@@ -10,11 +10,12 @@ use validator::Validate;
     tag = "API",
     path = "/introspection",
     responses(
-        (status = 200, description = "Get token via authentication")
+        (status = 200, description = "Get data instrospection via token")
     ),
     params(
-        ("token"=ParamIntrospection, description="token get on authorization"),
-    )
+        ("json"=ParamIntrospection, description="token get on authorization"),
+    ),
+    description = "Data introspection"
 )]
 #[post("/introspection")]
 pub async fn introspection(

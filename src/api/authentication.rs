@@ -7,7 +7,7 @@ use validator::Validate;
     tag = "API",
     path = "/authentication",
     responses(
-        (status = 200, description = "Get url to redirect authentication"),
+        (status = 200, description = "Get URL to redirect AGETIC authentication"),
         (status = 400, description = "redirect_uri is required")
     ),
     params(

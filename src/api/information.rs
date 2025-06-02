@@ -11,7 +11,7 @@ use validator::Validate;
         (status = 200, description = "Get information of user")
     ),
     params(
-        ("token"=ParamIntrospection, description="token get on authorization"),
+        ("json"=ParamIntrospection, description="token get on authorization"),
     )
 )]
 #[post("/information")]

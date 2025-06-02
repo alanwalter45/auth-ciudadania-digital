@@ -9,7 +9,7 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 mod api;
 use api::{
-    authentication::*, authorization::*, information::*, introspection::*, logout::*, redirect::*,
+    authentication::*, authorization::*, information::*, introspection::*, logout::*,
     refresh_token::*,
 };
 mod resources;
@@ -58,8 +58,6 @@ async fn main() -> std::io::Result<()> {
             .service(information)
             .service(refreshtoken)
             .service(introspection)
-            .service(welcome)
-            .service(origin)
             .service(logout)
             .service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")

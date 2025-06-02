@@ -15,6 +15,7 @@ use validator::Validate;
     params(
         ("code"=String,Query, description="code after authentication"),
         ("state"=String,Query, description="field state official"),
+        ("redirect_uri"=String,Query, description="field redirect_uri to use after login"),
     ),
     description="Generate Token"
 )]
@@ -28,7 +29,7 @@ pub async fn authorization(
             if params.state.clone().unwrap() == data.state {
                 let post_data = PostData {
                     code: params.code.clone().unwrap(),
-                    redirect_uri: format!("{}/welcome", data.url_server),
+                    redirect_uri: params.redirect_uri.clone().unwrap(),
                     grant_type: "authorization_code".to_string(),
                 };
 
@@ -76,6 +77,11 @@ struct ParamAuthorization {
         length(min = 15, message = "state must be greater than 30 chars")
     )]
     state: Option<String>,
+    #[validate(
+        required,
+        length(min = 5, message = "redirect URI must be greater than 5 chars")
+    )]
+    redirect_uri: Option<String>
 }
 
 #[derive(serde::Serialize)]

@@ -1,17 +1,26 @@
-# Ciudadania Digital
+# Ciudadanía Digital
 
-Implementación del servicio de autenticación con ciudadanía digital.
+Implementación del <u>servicio de autenticación</u> con ciudadanía digital.
 
-#### Documentación
+#### Tecnología
+
+Rust https://www.rust-lang.org/
+
+```sh
+# Instalar rust
+$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+#### Documentación AGETIC
 
 https://developer.ciudadaniadigital.bo/docs/servicios/autenticacion
 
-- Leer los apartados del servicio (Terminología, Autenticación, Autorización, Endpoints Utiles).
+- Leer apartados del servicio (Terminología, Autenticación, Autorización, Endpoints Utiles).
 - Registrar un proyecto de prueba para utilizar el API del servicio de autenticación.
 
 #### Discovery
 
-URL del proveedor de prueba
+Proveedor de prueba
 https://proveedor.ciudadania.demo.agetic.gob.bo/.well-known/openid-configuration
 
 #### Proyecto
@@ -28,7 +37,7 @@ $ cargo build --release
 $ ./target/release/auth-gadch
 ```
 
-#### Pasos Basicos
+#### Pasos Básicos
 
 -   Utilizar los usuarios de prueba del archivo (csv) proveido por la AGETIC en el apartado de configuración del servicio.
 -   Verificar codigo vía [yopmail.com](https://yopmail.com/en/wm) salvo que utilice la opción <u>Dispositivo de confianza</u>
@@ -52,15 +61,15 @@ https://github.com/alanwalter45/auth-ciudadania-digital-front
 
 #### Docker
 
-Los archivos Dockerfile.Base y Dockerfile.Launch son para crear un ambiente específico para un entorno de  producción (Ejemplo a ser acondicionado acorde al requerimiento).
+Los archivos <strong>Dockerfile.Base y Dockerfile.Launch</strong> son para crear un ambiente específico de  producción (Ejemplo a ser acondicionado acorde al requerimiento).
 
 ```sh
 # Crear imagen base con rust
-docker build -f Dockerfile.Base --no-cache=true -t rust-bullseye .
+$ docker build -f Dockerfile.Base --no-cache=true -t rust-bullseye .
 # Generar ejecutable para entorno de producción
-docker build -f Dockerfile.Launch --no-cache=true -t rust-cargo-bullseye .
+$ docker build -f Dockerfile.Launch --no-cache=true -t rust-cargo-bullseye .
 # Volumen para acceder al ejecutable
-docker run -it --rm -v rust_volume:/app rust-cargo-bullseye
+$ docker run -it --rm -v rust_volume:/app rust-cargo-bullseye
 ```
 
 > Autor : alanwalter45@gmail.com

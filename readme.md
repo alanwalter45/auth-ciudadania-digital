@@ -61,7 +61,7 @@ https://github.com/alanwalter45/auth-ciudadania-digital-front
 
 #### Docker
 
-Los archivos <strong>Dockerfile.Base y Dockerfile.Launch</strong> son para crear un ambiente específico de  producción (Ejemplo a ser acondicionado acorde al requerimiento).
+Los archivos <strong>Dockerfile.Base y Dockerfile.Launch</strong> son para crear un ambiente específico de producción (Ejemplo a ser ajustado acorde al requerimiento).
 
 ```sh
 # Crear imagen base con rust
